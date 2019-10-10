@@ -1,6 +1,7 @@
 package kernel
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 )
@@ -66,12 +67,17 @@ func (k Kernel) pixelValueFromNeighbourhood(neighbourhood []neighbour) color.Col
 func (k Kernel) Apply(img image.Image) (image.Image, error) {
 	imageBounds := img.Bounds()
 	result := image.NewRGBA(imageBounds)
+	totalPixels := imageBounds.Max.X * imageBounds.Max.Y
+	currentlyProcessedPixels := 0
 
 	for x := imageBounds.Min.X; x < imageBounds.Max.X; x++ {
 		for y := imageBounds.Min.Y; y < imageBounds.Max.Y; y++ {
 			neighbourhood := k.getNeighbourhood(x, y, img)
 			result.Set(x, y, k.pixelValueFromNeighbourhood(neighbourhood))
+			currentlyProcessedPixels++
 		}
+
+		fmt.Printf("\r%d%% done", 100*currentlyProcessedPixels/totalPixels)
 	}
 
 	return result, nil
