@@ -16,10 +16,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, format, err := image.Decode(imageFile)
+	imageData, format, err := image.Decode(imageFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Read a %s image \n", format)
+	fmt.Printf("The size of the image is %s\n", imageData.Bounds().Size())
+
 	return
 }
