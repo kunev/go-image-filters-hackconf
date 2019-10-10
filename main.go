@@ -50,16 +50,20 @@ func main() {
 	fmt.Printf("Read a %s image \n", format)
 	fmt.Printf("The size of the image is %s\n", imageData.Bounds().Size())
 
-	if err := writeImage(imageData, format); err != nil {
-		log.Fatal(err)
-	}
-
 	k := kernel.New([][]float32{
 		{0, 0, 0},
 		{0, 1, 0},
 		{0, 0, 0},
 	})
-	fmt.Printf("%#v", k)
+	resultImage, err := k.Apply(imageData)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := writeImage(resultImage, format); err != nil {
+		log.Fatal(err)
+	}
 
 	return
 }
