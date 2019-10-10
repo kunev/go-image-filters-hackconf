@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"image"
-	_ "image/jpeg"
-	_ "image/png"
+	"image/jpeg"
+	"image/png"
 	"log"
 	"os"
 )
@@ -30,6 +30,18 @@ func main() {
 	}
 	fmt.Printf("Read a %s image \n", format)
 	fmt.Printf("The size of the image is %s\n", imageData.Bounds().Size())
+
+	writer, err := os.Create(fmt.Sprintf("output.%s", format))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	switch format {
+	case "jpeg":
+		jpeg.Encode(writer, imageData, nil)
+	case "png":
+		png.Encode(writer, imageData)
+	}
 
 	return
 }
