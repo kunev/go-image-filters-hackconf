@@ -8,6 +8,8 @@ import (
 	"image/png"
 	"log"
 	"os"
+
+	"github.com/kunev/go-image-filters-hackconf/kernel"
 )
 
 func loadImage(filePath string) (image.Image, string, error) {
@@ -51,6 +53,13 @@ func main() {
 	if err := writeImage(imageData, format); err != nil {
 		log.Fatal(err)
 	}
+
+	k := kernel.New([][]float32{
+		{0, 0, 0},
+		{0, 1, 0},
+		{0, 0, 0},
+	})
+	fmt.Printf("%#v", k)
 
 	return
 }
