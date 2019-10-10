@@ -49,6 +49,19 @@ func (k Kernel) getNeighbourhood(x, y int, img image.Image) []neighbour {
 	return neighbourhood
 }
 
+func (k Kernel) pixelValueFromNeighbourhood(neighbourhood []neighbour) color.Color {
+	result := color.RGBA64{}
+	for _, n := range neighbourhood {
+		coef := k.Coefficients[n.xOffset+k.Width/2][n.yOffset+k.Height/2]
+		r, g, b, a := n.clr.RGBA()
+		result.R += uint16(float32(r) * coef)
+		result.G += uint16(float32(g) * coef)
+		result.B += uint16(float32(b) * coef)
+		result.A = uint16(a)
+	}
+	return result
+}
+
 // Apply applies a kernel to an image returning the resulting image
 func (k Kernel) Apply(img image.Image) (image.Image, error) {
 	imageBounds := img.Bounds()
