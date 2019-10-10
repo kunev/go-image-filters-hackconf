@@ -1,1 +1,4 @@
 go-image-filters-hackconf
+*.jpg
+*.jpeg
+*.png
