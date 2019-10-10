@@ -38,9 +38,13 @@ func main() {
 
 	switch format {
 	case "jpeg":
-		jpeg.Encode(writer, imageData, nil)
+		err = jpeg.Encode(writer, imageData, nil)
 	case "png":
-		png.Encode(writer, imageData)
+		err = png.Encode(writer, imageData)
+	}
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return
