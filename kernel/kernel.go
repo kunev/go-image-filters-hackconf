@@ -1,5 +1,7 @@
 package kernel
 
+import "image"
+
 // Kernel describes an image kernel
 type Kernel struct {
 	Width        int
@@ -15,4 +17,18 @@ func New(coefficients [][]float32) Kernel {
 	result.Coefficients = coefficients
 
 	return result
+}
+
+// Apply applies a kernel to an image returning the resulting image
+func (k Kernel) Apply(img image.Image) (image.Image, error) {
+	imageBounds := img.Bounds()
+	result := image.NewRGBA(imageBounds)
+
+	for x := imageBounds.Min.X; x < imageBounds.Max.X; x++ {
+		for y := imageBounds.Min.Y; y < imageBounds.Max.Y; y++ {
+			result.Set(x, y, img.At(x, y))
+		}
+	}
+
+	return result, nil
 }
