@@ -1,7 +1,6 @@
 package kernel
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 )
@@ -64,7 +63,7 @@ func (k Kernel) pixelValueFromNeighbourhood(neighbourhood []neighbour) color.Col
 }
 
 // Apply applies a kernel to an image returning the resulting image
-func (k Kernel) Apply(img image.Image) (image.Image, error) {
+func (k Kernel) Apply(img image.Image, progressChannel chan<- int) (image.Image, error) {
 	imageBounds := img.Bounds()
 	result := image.NewRGBA(imageBounds)
 	totalPixels := imageBounds.Max.X * imageBounds.Max.Y
@@ -77,7 +76,7 @@ func (k Kernel) Apply(img image.Image) (image.Image, error) {
 			currentlyProcessedPixels++
 		}
 
-		fmt.Printf("\r%d%% done", 100*currentlyProcessedPixels/totalPixels)
+		progressChannel <- 100 * currentlyProcessedPixels / totalPixels
 	}
 
 	return result, nil

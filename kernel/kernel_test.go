@@ -1,6 +1,7 @@
 package kernel
 
 import (
+	"fmt"
 	"image"
 	"os"
 	"testing"
@@ -30,7 +31,16 @@ func TestKernel_Apply(t *testing.T) {
 	})
 	file, err := os.Open("../input.jpg")
 	image, _, err := image.Decode(file)
-	result, err := kernel.Apply(image)
+	progressChannel := make(chan int)
+	go func() {
+		for progress := range progressChannel {
+			if progress >= 100 || progress < 0 {
+				t.Error(fmt.Sprintf("incorrect progress percent reported: %d", progress))
+			}
+		}
+	}()
+	result, err := kernel.Apply(image, progressChannel)
+	close(progressChannel)
 	if err != nil {
 		t.Fatal("kernel.Apply returner an error: ", err)
 	}

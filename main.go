@@ -55,7 +55,15 @@ func main() {
 		{0, 1, 0},
 		{0, 0, 0},
 	})
-	resultImage, err := k.Apply(imageData)
+	progressChannel := make(chan int)
+	go func() {
+		for progress := range progressChannel {
+			fmt.Printf("\r%d%% done", progress)
+		}
+	}()
+
+	resultImage, err := k.Apply(imageData, progressChannel)
+	close(progressChannel)
 
 	if err != nil {
 		log.Fatal(err)
