@@ -69,7 +69,8 @@ func (k Kernel) Apply(img image.Image) (image.Image, error) {
 
 	for x := imageBounds.Min.X; x < imageBounds.Max.X; x++ {
 		for y := imageBounds.Min.Y; y < imageBounds.Max.Y; y++ {
-			result.Set(x, y, img.At(x, y))
+			neighbourhood := k.getNeighbourhood(x, y, img)
+			result.Set(x, y, k.pixelValueFromNeighbourhood(neighbourhood))
 		}
 	}
 
