@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/jpeg"
@@ -21,6 +22,22 @@ func loadImage(filePath string) (image.Image, string, error) {
 	return imageData, format, nil
 }
 
+func writeImage(imageData image.Image, format string) error {
+	writer, err := os.Create(fmt.Sprintf("output.%s", format))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	switch format {
+	case "jpeg":
+		return jpeg.Encode(writer, imageData, nil)
+	case "png":
+		return png.Encode(writer, imageData)
+	default:
+		return errors.New("Unknown format")
+	}
+}
+
 func main() {
 	filePath := os.Args[1]
 	fmt.Printf("Attempting to read image from %s\n", filePath)
@@ -31,19 +48,7 @@ func main() {
 	fmt.Printf("Read a %s image \n", format)
 	fmt.Printf("The size of the image is %s\n", imageData.Bounds().Size())
 
-	writer, err := os.Create(fmt.Sprintf("output.%s", format))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	switch format {
-	case "jpeg":
-		err = jpeg.Encode(writer, imageData, nil)
-	case "png":
-		err = png.Encode(writer, imageData)
-	}
-
-	if err != nil {
+	if err := writeImage(imageData, format); err != nil {
 		log.Fatal(err)
 	}
 
