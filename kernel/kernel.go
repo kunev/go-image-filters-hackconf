@@ -28,6 +28,21 @@ func New(coefficients [][]float32) Kernel {
 	return result
 }
 
+// NewBlur returns a blur Kernel with the specified size
+func NewBlur(size int) Kernel {
+	coefficients := [][]float32{}
+
+	for x := 0; x < size; x++ {
+		row := []float32{}
+		for y := 0; y < size; y++ {
+			row = append(row, 1/float32(size*size))
+		}
+		coefficients = append(coefficients, row)
+	}
+
+	return New(coefficients)
+}
+
 func (k Kernel) getNeighbourhood(x, y int, img image.Image) []neighbour {
 	bounds := img.Bounds()
 	neighbourhood := []neighbour{}
